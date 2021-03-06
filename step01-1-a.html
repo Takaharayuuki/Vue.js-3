@@ -10,7 +10,9 @@
       display: grid;
       grid-template-rows: 200px 50px;
       grid-template-columns: 300px 300px;
-      grid-template-areas: "inputArea previewArea";
+      grid-template-areas: 
+      "inputArea previewArea"
+      "buttonArea buttonArea";
       grid-gap: 10px;
     }
 
@@ -22,6 +24,13 @@
     .previewArea {
       grid-area: previewArea;
       display: grid;
+    }
+
+    .buttonArea {
+      grid-area: buttonArea;
+      display: grid;
+      justify-items: center;
+      align-items: center;
     }
   </style>
 </head>
@@ -42,15 +51,29 @@
         <label>メールアドレス</label>
         <input v-bind:value="email" readonly>
       </div>
+      <div class="buttonArea">
+        <button @click="saveUser">ユーザーを登録する</button>
+      </div>
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue@3.0.0/dist/vue.global.js"></script>
   <script>
     const app = Vue.createApp({
       data: () => ({
+        users: [],
         nickname: '',
         email: '',
       }),
+      methods: {
+        saveUser: function() {
+          let user = {
+            nickname: this.nickname,
+            email: this.email,
+          };
+          this.users.push(user);
+          alert('ニックネーム: ' + this.nickname + ', メールアドレス: ' + this.email + 'で登録しました');
+        }
+      },
     });
     app.mount('#app');
   </script>
