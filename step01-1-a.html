@@ -32,6 +32,24 @@
       justify-items: center;
       align-items: center;
     }
+
+    .filterArea {
+      display: grid;
+      grid-template-columns: 300px 300px;
+      grid-gap: 10px;
+    }
+
+    table {
+      margin-top: 10px;
+      width: 610px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      width: 50%;
+      padding-left: 5px;
+      word-break: break-all;
+    }
   </style>
 </head>
 <body>
@@ -55,6 +73,24 @@
         <button @click="saveUser">ユーザーを登録する</button>
       </div>
     </div>
+    <div>
+      <table>
+        <thead>
+          <th>ニックネーム</th>
+          <th>メールアドレス</th>
+        </thead>
+        <tbody>
+          <tr v-for="user in filterdUsers">
+            <td>{{ user.nickname }}</td>
+            <td>{{ user.email }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="filterArea">
+      <label>リストをニックネームで絞り込む</label>
+      <input v-model="nicknameFilter">
+    </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue@3.0.0/dist/vue.global.js"></script>
   <script>
@@ -63,6 +99,7 @@
         users: [],
         nickname: '',
         email: '',
+        nicknameFilter: '',
       }),
       methods: {
         saveUser: function() {
@@ -74,6 +111,12 @@
           alert('ニックネーム: ' + this.nickname + ', メールアドレス: ' + this.email + 'で登録しました');
         }
       },
+      computed: {
+        filterdUsers: function() {
+          console.log('called.');
+          return this.users.filter(user => user.nickname.includes(this.nicknameFilter));
+        }
+      }
     });
     app.mount('#app');
   </script>
