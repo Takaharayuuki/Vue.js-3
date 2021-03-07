@@ -92,17 +92,7 @@
           <th>メールアドレス</th>
         </thead>
         <tbody>
-          <tr v-for="(user, index) in filterdUsers">
-            <td >
-             <span v-show="!user.editable" @click="edit(user, index)">{{ user.nickname }}</span>
-             <input
-               v-model="user.nickname"
-               v-if="user.editable"
-               @blur="user.editable = false"
-               ref="editNickname">
-            </td>
-            <td>{{ user.email }}</td>
-          </tr>
+         <tr v-is="'user-row'" v-for="(user, index) in filterdUsers" :user="user" :key="index" />
         </tbody>
       </table>
     </div>
@@ -113,11 +103,43 @@
     <div class="buttonWrapper">
       <button @click="displayUsers">ユーザーを表示する</button>
     </div>
-    <p>{{ users }}</p>
+    <!-- デバッグ用 -->
+    <pre>{{ users }}</pre>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue@3.0.0/dist/vue.global.js"></script>
   <script>
+    const userRowComponent = Vue.defineComponent({
+      props: ["user"],
+      data() {
+        return {
+          editable: false
+        }
+      },
+      methods: {
+        edit: function() {
+          this.editable = true;
+          this.$nextTick(() =>  {
+          this.$refs.editNickname.focus();
+          })
+        },
+      },
+      template: `
+      <tr>
+        <td>
+          <span v-show="!editable" @click="edit">{{ user.nickname }}</span>
+          <input
+            v-model="user.nickname"
+            v-if="editable"
+            @blur="editable = false"
+            ref="editNickname">
+        </td>
+      </tr>
+        `
+    })
     const app = Vue.createApp({
+      components: {
+        'user-row': userRowComponent
+      },
       data: () => ({
         users: [],
         nickname: '',
@@ -134,13 +156,7 @@
           this.users.push(user);
           alert('ニックネーム: ' + this.nickname + ', メールアドレス: ' + this.email + 'で登録しました');
         },
-        edit: function(user,index) {
-          console.log(user);
-          user.editable = true;
-          this.$nextTick(() =>  {
-          this.$refs.editNickname.focus();
-          })
-        },
+      
         displayUsers: function() {
           let message = this.users.length + '人のユーザーが登録されています。'
           for (const user of this.users) {
