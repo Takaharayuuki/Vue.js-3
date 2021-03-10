@@ -12,26 +12,33 @@
   </tr>
 </template>
 
-<script>
-import { defineComponent, ref, nextTick } from "@vue/composition-api";
+<script lang="ts">
+import { defineComponent, ref, nextTick, PropType } from "@vue/composition-api";
 
 // vue3.0
+
+export interface User {
+  nickname: string;
+  email: string;
+}
+
 export default defineComponent({
   props: {
     user: {
-      type: Object,
+      type: Object as PropType<User>,
       required: true,
     },
   },
   setup() {
     const editable = ref(false);
-    const editNickname = ref(null);
+    const editNickname = ref<HTMLFormElement | null>(null);
 
     // methodsの変わり
     const edit = () => {
       editable.value = true;
       nextTick(() => {
-        editNickname.value.focus();
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        (editNickname.value! as HTMLFormElement).focus();
       });
     };
 
@@ -42,7 +49,7 @@ export default defineComponent({
     };
   },
 });
-
+/* eslint-disable */
 // vue 2.0
 // export default Vue.extend({
 //   props: {
